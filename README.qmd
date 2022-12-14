@@ -1,0 +1,136 @@
+---
+format: gfm
+---
+
+## Repo Overview
+
+For all supervised machine learning projects, computing an accurate label is critical. It is fairly common to have bespoke data feeds for each client. If a client is simply not sending the required data, an accurate label is impossible.
+
+Semi-supervised machine learning presents an alternative option. The problem clients' X matrix is combined with known clients' X and Y matrices to impute labels. These imputed labels are combined with the known labels to build a better final model. At least that is the pitch of semi-supervised approaches.
+
+In this repo, I test this claim with a few questions.
+
+-   How accurate are the imputed labels?
+-   Does imputing labels lead to a final model with better performance metrics?
+-   If most of the labels are unknown, does the approach still work?
+-   Does this approach work for both classification and regression?
+
+## Simulation Setup
+
+Basic outline:
+
+-   Step 1: Create data. Either classification or regression.
+-   Step 2: Train a model on just known data.
+-   Step 3: Learn a latent variable representation using both labeled and unlabeled data.
+-   Step 4: Impute labels using the closes five data points with known labels.
+-   Step 5: Compare imputation to true labels of unlabeled data.
+-   Step 6: Train a model with imputed labels added in.
+-   Step 7: Compare performance metrics of the two models on unseen data.
+
+For each iteration, only twenty thousand data points are created (labeled and unlabeled). This process is repeated varying the proportion of data with unknown labels. Kernel PCA with different kernels is used at step three. Each combination of settings is repeated 5 times and an average computed to reduce variability of metrics.
+
+## Results
+
+```{python}
+#| include: false
+import os
+import numpy as np
+import pandas as pd
+from plotnine import ggplot, aes, labs
+from plotnine import scale_x_continuous, scale_y_continuous
+from plotnine import geom_line, geom_point
+
+os.chdir('S:/Python/projects/semi_supervised')
+```
+
+### Data
+
+The first few rows look like
+
+```{python}
+#| echo: false
+result = pd.read_csv('data/result.csv')
+result['prop'] = 1 - result['prop'] # prop known to prop unknown
+result = result.groupby(['type', 'prop', 'kernel'], as_index=False).mean().drop(['b'], axis = 1)
+result.head()
+```
+
+For classification, match metric is the accuracy of the imputed labels and model metric is the difference in AUC between the two models. For regression, match metric is mean absolute error of the imputed response variable and model metric is the difference in M.A.E. of the two models.
+
+### Classification
+
+```{python}
+#| echo: false
+temp = result.loc[result.type == "classification"]
+(
+    ggplot(temp, aes(x = 'prop', y = 'matchMetric', color = 'kernel'))
+    + geom_line()
+    + geom_point()
+    + scale_x_continuous(breaks = np.arange(0, 1.05, .10))
+    + scale_y_continuous(breaks = np.arange(0, 1.01, .01))
+    + labs(title = "Classification", x = "Proportion of Unknown Labels", y = "Accuracy of Imputed Labels")
+)
+```
+
+The polynomial kernel lead to the most accurate imputed labels and was consistent as the proportion of imputed labels increased. Even the worst performing kernel was reasonably accurate when 95% of the data had unknown label.
+
+```{python}
+#| echo: false
+temp = result.loc[result.type == "classification"]
+(
+    ggplot(temp, aes(x = 'prop', y = 'modelMetric', color = 'kernel'))
+    + geom_line()
+    + geom_point()
+    + scale_x_continuous(breaks = np.arange(0, 1.05, .10))
+    + scale_y_continuous(breaks = np.arange(-1, 1.01, .02))
+    + labs(title = "Classification", x = "Proportion of Unknown Labels", y = "Difference in AUC")
+)
+```
+
+In this graph, higher is better. Zero means no improvement in AUC.
+
+The most accurate labels did not lead to the most performant model. Instead, the cosine kernel was best. One possible explanation is the latent structure learned by the cosine kernel provided better separation of classes.
+
+In general, the semi-supervised approach lead to a more performant model than using known labels alone. Using kernel PCA and tuning the selected kernel is worth the cost of compute time and code complexity.
+
+### Regression
+
+```{python}
+#| echo: false
+temp = result.loc[result.type == "regression"]
+(
+    ggplot(temp, aes(x = 'prop', y = 'matchMetric', color = 'kernel'))
+    + geom_line()
+    + geom_point()
+    + scale_x_continuous(breaks = np.arange(0, 1.05, .10))
+    + scale_y_continuous(breaks = np.arange(0, 200, 5))
+    + labs(title = "Regression", x = "Proportion of Unknown Labels", y = "Mean Absolute Error")
+)
+```
+
+For regression, lower is better. Zero means perfect predictions.
+
+This time, the rbf kernel is the clear winner in inputting the most accurate response.
+
+```{python}
+#| echo: false
+temp = result.loc[result.type == "regression"]
+(
+    ggplot(temp, aes(x = 'prop', y = 'modelMetric', color = 'kernel'))
+    + geom_line()
+    + geom_point()
+    + scale_x_continuous(breaks = np.arange(0, 1.05, .10))
+    + scale_y_continuous(breaks = np.arange(-100, 100, 2))
+    + labs(title = "Regression", x = "Proportion of Unknown Labels", y = "Difference in MAE")
+)
+```
+
+In this graph, lower is better. Zero means no improvement in mean absolute error. Negative values mean a reduction in M.A.E.
+
+Similar to classification, the most accurate response variable did not lead to the most performant model. In fact the rbf kernel provided the smallest improvement. For best kernel, there is a three way tie between sigmoid, polynomial and linear.
+
+The major takeaways are the same. The semi-supervised approach lead to an improvement in model performance in all cases and tuning the kernel is important.
+
+## Limitations of Simulation and Possible Next Steps
+
+The primary imitation of this simulation is how the data are generated. The labeled, unlabeled, and unseen data are identically distributed. In practice, the unlabeled data may have a drastically different distribution than the labeled data. In addition, all predictor variables are numeric and related to the response variable. Neither of these conditions are true often in practice.
