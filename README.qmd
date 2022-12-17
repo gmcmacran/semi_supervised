@@ -6,7 +6,7 @@ format: gfm
 
 For all supervised machine learning projects, computing an accurate label is critical. It is fairly common to have bespoke data feeds for each client. If a client is simply not sending the required data, an accurate label is impossible.
 
-Semi-supervised machine learning presents an alternative option. The problem clients' X matrix is combined with known clients' X and Y matrices to impute labels. These imputed labels are combined with the known labels to build a better final model. At least that is the pitch of semi-supervised approaches.
+Semi-supervised machine learning presents an alternative option. The problem clients X matrix is combined with known clients' X and Y matrices to impute labels. These imputed labels are combined with the known labels to build a better final model. At least that is the pitch of semi-supervised approaches.
 
 In this repo, I test this claim with a few questions.
 
@@ -21,13 +21,13 @@ Basic outline:
 
 -   Step 1: Create data. Either classification or regression.
 -   Step 2: Train a model on just known data.
--   Step 3: Learn a latent variable representation using both labeled and unlabeled data.
+-   Step 3: Learn a latent variable representation using both labeled and unlabeled data's X.
 -   Step 4: Impute labels using the closes five data points with known labels.
 -   Step 5: Compare imputation to true labels of unlabeled data.
 -   Step 6: Train a model with imputed labels added in.
--   Step 7: Compare performance metrics of the two models on unseen data.
+-   Step 7: Compare performance metrics of the two models (step 2 and step 6) on unseen data.
 
-For each iteration, only twenty thousand data points are created (labeled and unlabeled). This process is repeated varying the proportion of data with unknown labels. Kernel PCA with different kernels is used at step three. Each combination of settings is repeated 5 times and an average computed to reduce variability of metrics.
+For each iteration, only fifty thousand data points are created (labeled and unlabeled). This process is repeated varying the proportion of data with unknown labels. Kernel PCA with different kernels is used at step three. Each combination of settings is repeated 5 times and an average is computed to reduce variability of metrics.
 
 ## Results
 

@@ -166,7 +166,7 @@ for type in ["classification", "regression"]:
             for b in np.arange(0, 5):
 
                 seed += 1
-                DF = create_data(type, 100000, 10, seed)
+                DF = create_data(type, 50000, 10, seed)
 
                 X_known, Y_known, X_unknown, Y_unknown = extract_XY(DF, prop, type)
 
@@ -178,7 +178,7 @@ for type in ["classification", "regression"]:
                 model_known = train_model(X_known, Y_known,  type)
 
                 # semi supervised (imputing labels)
-                DF = create_data(type, 100000, 10, seed)
+                DF = create_data(type, 50000, 10, seed)
                 X_known, Y_known, X_unknown, Y_unknown = extract_XY(DF, prop, type)
 
                 X_known, X_unknown, scaler_unknown = standardize(X_known, X_unknown)
