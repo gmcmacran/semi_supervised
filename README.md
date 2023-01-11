@@ -126,13 +126,13 @@ variable and model metric is the difference in M.A.E. of the two models.
 
 ![](README_files/figure-commonmark/cell-4-output-1.png)
 
-    <ggplot: (160614589221)>
+    <ggplot: (92959323956)>
 
 No kernel stands out as superior to any other kernel.
 
 ![](README_files/figure-commonmark/cell-5-output-1.png)
 
-    <ggplot: (160606132017)>
+    <ggplot: (92959276840)>
 
 In this graph, higher is better. Zero means no improvement in AUC.
 
@@ -146,7 +146,7 @@ the approached helped a great deal. Sometimes it hurt a great deal.
 
 ![](README_files/figure-commonmark/cell-6-output-1.png)
 
-    <ggplot: (160615183460)>
+    <ggplot: (92959938948)>
 
 For regression, lower is better. Zero means perfect predictions.
 
@@ -154,7 +154,7 @@ Similar to above. No kernel stands out.
 
 ![](README_files/figure-commonmark/cell-7-output-1.png)
 
-    <ggplot: (160614597936)>
+    <ggplot: (92960097238)>
 
 In this graph, lower is better. Zero means no improvement in mean
 absolute error. Negative values mean a reduction in M.A.E.
