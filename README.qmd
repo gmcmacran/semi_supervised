@@ -2,6 +2,7 @@
 format:
   gfm:
     html-math-method: webtex
+jupyter: python3
 ---
 
 ## Repo Overview
