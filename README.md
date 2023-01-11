@@ -47,75 +47,12 @@ is computed to reduce variability of metrics.
 
 The first few rows look like
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>type</th>
-      <th>prop</th>
-      <th>kernel</th>
-      <th>matchMetric</th>
-      <th>modelMetric</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>classification</td>
-      <td>0.05</td>
-      <td>cosine</td>
-      <td>0.81968</td>
-      <td>-0.008973</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>classification</td>
-      <td>0.05</td>
-      <td>linear</td>
-      <td>0.72480</td>
-      <td>0.069621</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>classification</td>
-      <td>0.05</td>
-      <td>poly</td>
-      <td>0.82992</td>
-      <td>-0.002351</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>classification</td>
-      <td>0.05</td>
-      <td>rbf</td>
-      <td>0.81752</td>
-      <td>-0.037626</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>classification</td>
-      <td>0.05</td>
-      <td>sigmoid</td>
-      <td>0.73816</td>
-      <td>-0.032248</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+                 type  prop   kernel  matchMetric  modelMetric
+    0  classification  0.05   cosine      0.81968    -0.008973
+    1  classification  0.05   linear      0.72480     0.069621
+    2  classification  0.05     poly      0.82992    -0.002351
+    3  classification  0.05      rbf      0.81752    -0.037626
+    4  classification  0.05  sigmoid      0.73816    -0.032248
 
 For classification, match metric is the accuracy of the imputed labels
 and model metric is the difference in AUC between the two models. For
@@ -126,13 +63,13 @@ variable and model metric is the difference in M.A.E. of the two models.
 
 ![](README_files/figure-commonmark/cell-4-output-1.png)
 
-    <ggplot: (92959323956)>
+    <ggplot: (97170609918)>
 
 No kernel stands out as superior to any other kernel.
 
 ![](README_files/figure-commonmark/cell-5-output-1.png)
 
-    <ggplot: (92959276840)>
+    <ggplot: (97162163867)>
 
 In this graph, higher is better. Zero means no improvement in AUC.
 
@@ -146,7 +83,7 @@ the approached helped a great deal. Sometimes it hurt a great deal.
 
 ![](README_files/figure-commonmark/cell-6-output-1.png)
 
-    <ggplot: (92959938948)>
+    <ggplot: (97171381038)>
 
 For regression, lower is better. Zero means perfect predictions.
 
@@ -154,7 +91,7 @@ Similar to above. No kernel stands out.
 
 ![](README_files/figure-commonmark/cell-7-output-1.png)
 
-    <ggplot: (92960097238)>
+    <ggplot: (97170654971)>
 
 In this graph, lower is better. Zero means no improvement in mean
 absolute error. Negative values mean a reduction in M.A.E.

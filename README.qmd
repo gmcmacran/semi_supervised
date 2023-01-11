@@ -54,7 +54,7 @@ The first few rows look like
 result = pd.read_csv('data/result.csv')
 result['prop'] = 1 - result['prop'] # prop known to prop unknown
 result = result.groupby(['type', 'prop', 'kernel'], as_index=False).mean().drop(['b'], axis = 1)
-result.head()
+print(result.head())
 ```
 
 For classification, match metric is the accuracy of the imputed labels and model metric is the difference in AUC between the two models. For regression, match metric is mean absolute error of the imputed response variable and model metric is the difference in M.A.E. of the two models.
