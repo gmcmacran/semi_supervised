@@ -7,7 +7,7 @@ each client. If a client is simply not sending the required data, an
 accurate label is impossible.
 
 Semi-supervised machine learning presents an alternative option. The
-problem clients X matrix is combined with known clients’ X and Y
+problem client’s X matrix is combined with known clients’ X and Y
 matrices to impute labels. These imputed labels are combined with the
 known labels to build a better final model. At least that is the pitch
 of semi-supervised approaches.
@@ -61,48 +61,61 @@ variable and model metric is the difference in M.A.E. of the two models.
 
 ### Classification
 
+To end up with an improvement in performance metrics, the imputed labels
+need to be accurate. Does one kernel lead to more accurate labels than
+another?
+
 ![](README_files/figure-commonmark/cell-4-output-1.png)
 
-    <ggplot: (97170609918)>
+    <ggplot: (114780408469)>
 
-No kernel stands out as superior to any other kernel.
+All kernels lead to similar accuracy. No kernel stands out as superior
+to any other kernel.
 
 ![](README_files/figure-commonmark/cell-5-output-1.png)
 
-    <ggplot: (97162163867)>
+    <ggplot: (114780452600)>
 
 In this graph, higher is better. Zero means no improvement in AUC.
 
-Again, no kernel stands out as good. When 15% of the data has unknown
-labels, the semi-supervised approach improved the final model by .10
-AUC. A major improvement. For 15%, other kernels caused a major
-degradation in performance. In general, this is a mixed bag. Sometimes
-the approached helped a great deal. Sometimes it hurt a great deal.
+Again, no kernel stands out as best. In general, this is a mixed bag.
+Sometimes the approached helped a great deal. Sometimes it hurt a great
+deal. Digging into 15%, the cosine similarity kernel improved increase
+AUC by .10. A major improvement. Holding data constant, the sigmoid
+kernel degraded performance by .12. A major decrease. Looking at the
+whole graph, no kernel is able to deliver consistent results. The
+semi-supervised is hit or miss for these data.
 
 ### Regression
 
-![](README_files/figure-commonmark/cell-6-output-1.png)
-
-    <ggplot: (97171381038)>
-
 For regression, lower is better. Zero means perfect predictions.
 
-Similar to above. No kernel stands out.
+Similar to classification, no kernel stands out.
+
+![](README_files/figure-commonmark/cell-6-output-1.png)
+
+    <ggplot: (114780402292)>
+
+In the below graph, lower is better. Negative values mean a reduction in
+M.A.E. Zero means no improvement in mean absolute error.
+
+The results are worse for regression. The semi-supervised approach
+failed the vast majority of the time. It only worked one time and this
+make be a fluke!
 
 ![](README_files/figure-commonmark/cell-7-output-1.png)
 
-    <ggplot: (97170654971)>
-
-In this graph, lower is better. Zero means no improvement in mean
-absolute error. Negative values mean a reduction in M.A.E.
-
-The results are worse for regression. The semi-supervised approach
-failed the vast majority of the time.
+    <ggplot: (114781177298)>
 
 ## Closing Thoughts
 
-The project takes a roll-your-own approach to semi-supervised.
+First, this project used scikit-learns make_classification and
+make_regression. Both of these functions make prediction problems that
+are difficult. Many real world problems are easier. Thus my poor results
+are problem specific and the semi-supervised is still worth trying.
+
+Second, this project takes a roll-your-own approach to semi-supervised.
 Scikit-learn has added two semi-supervised learners and an additional
 meta estimator that turns any supervised approach (SVM, random forest,
-boosting, etc) into a semi-supervised approach. These tools are more
+boosting, etc.) into a semi-supervised approach. These tools are more
 robust than what I have done here.
