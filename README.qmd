@@ -49,7 +49,6 @@ os.chdir('S:/Python/projects/semi_supervised')
 ### Data
 
 The first few rows look like
-
 ```{python}
 #| echo: false
 result = pd.read_csv('data/result.csv')
