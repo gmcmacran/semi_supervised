@@ -38,7 +38,7 @@ import numpy as np
 import pandas as pd
 from plotnine import ggplot, aes, labs
 from plotnine import scale_x_continuous, scale_y_continuous
-from plotnine import geom_line, geom_point
+from plotnine import geom_line, geom_point, geom_hline
 
 os.chdir('S:/Python/projects/semi_supervised')
 ```
@@ -72,7 +72,7 @@ temp = result.loc[result.type == "classification"]
 )
 ```
 
-The polynomial kernel lead to the most accurate imputed labels and was consistent as the proportion of imputed labels increased. Even the worst performing kernel was reasonably accurate when 95% of the data had unknown label.
+No kernel stands out as superior to any other kernel.
 
 ```{python}
 #| echo: false
@@ -81,6 +81,7 @@ temp = result.loc[result.type == "classification"]
     ggplot(temp, aes(x = 'prop', y = 'modelMetric', color = 'kernel'))
     + geom_line()
     + geom_point()
+    + geom_hline(yintercept = 0)
     + scale_x_continuous(breaks = np.arange(0, 1.05, .10))
     + scale_y_continuous(breaks = np.arange(-1, 1.01, .02))
     + labs(title = "Classification", x = "Proportion of Unknown Labels", y = "Difference in AUC")
@@ -89,9 +90,7 @@ temp = result.loc[result.type == "classification"]
 
 In this graph, higher is better. Zero means no improvement in AUC.
 
-The most accurate labels did not lead to the most performant model. Instead, the cosine kernel was best. One possible explanation is the latent structure learned by the cosine kernel provided better separation of classes.
-
-In general, the semi-supervised approach lead to a more performant model than using known labels alone. Using kernel PCA and tuning the selected kernel is worth the cost of compute time and code complexity.
+Again, no kernel stands out as good. When 15% of the data has unknown labels, the semi-supervised approach improved the final model by .10 AUC. A major improvement. For 15%, other kernels caused a major degradation in performance. In general, this is a mixed bag. Sometimes the approached helped a great deal. Sometimes it hurt a great deal.
 
 ### Regression
 
@@ -110,7 +109,7 @@ temp = result.loc[result.type == "regression"]
 
 For regression, lower is better. Zero means perfect predictions.
 
-This time, the rbf kernel is the clear winner in inputting the most accurate response.
+Similar to above. No kernel stands out.
 
 ```{python}
 #| echo: false
@@ -119,6 +118,7 @@ temp = result.loc[result.type == "regression"]
     ggplot(temp, aes(x = 'prop', y = 'modelMetric', color = 'kernel'))
     + geom_line()
     + geom_point()
+    + geom_hline(yintercept = 0)
     + scale_x_continuous(breaks = np.arange(0, 1.05, .10))
     + scale_y_continuous(breaks = np.arange(-100, 100, 2))
     + labs(title = "Regression", x = "Proportion of Unknown Labels", y = "Difference in MAE")
@@ -127,10 +127,8 @@ temp = result.loc[result.type == "regression"]
 
 In this graph, lower is better. Zero means no improvement in mean absolute error. Negative values mean a reduction in M.A.E.
 
-Similar to classification, the most accurate response variable did not lead to the most performant model. In fact the rbf kernel provided the smallest improvement. For best kernel, there is a three way tie between sigmoid, polynomial and linear.
+The results are worse for regression. The semi-supervised approach failed the vast majority of the time.
 
-The major takeaways are the same. The semi-supervised approach lead to an improvement in model performance in all cases and tuning the kernel is important.
+## Closing Thoughts
 
-## Limitations of Simulation and Possible Next Steps
-
-The primary imitation of this simulation is how the data are generated. The labeled, unlabeled, and unseen data are identically distributed. In practice, the unlabeled data may have a drastically different distribution than the labeled data. In addition, all predictor variables are numeric and related to the response variable. Neither of these conditions are true often in practice.
+The project takes a roll-your-own approach to semi-supervised. Scikit-learn has added two semi-supervised learners and an additional meta estimator that turns any supervised approach (SVM, random forest, boosting, etc) into a semi-supervised approach. These tools are more robust than what I have done here.
